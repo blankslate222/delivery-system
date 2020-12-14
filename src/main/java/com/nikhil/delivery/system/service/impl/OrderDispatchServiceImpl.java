@@ -6,6 +6,8 @@ import com.nikhil.delivery.system.callback.impl.KitchenCallbackImpl;
 import com.nikhil.delivery.system.model.Order;
 import com.nikhil.delivery.system.service.CourierHandlerService;
 import com.nikhil.delivery.system.service.OrderDispatchService;
+import com.nikhil.delivery.system.strategy.FifoStrategy;
+import com.nikhil.delivery.system.strategy.MatchedStrategy;
 import com.nikhil.delivery.system.strategy.impl.FifoStrategyImpl;
 import com.nikhil.delivery.system.strategy.impl.MatchedStrategyImpl;
 import com.nikhil.delivery.system.strategy.Strategy;
@@ -26,11 +28,13 @@ public class OrderDispatchServiceImpl implements OrderDispatchService {
         this.kitchenThreadPool = kitchenThreadPool;
         this.courierHandlerThreadPool = courierHandlerThreadPool;
         if (StrategyEnum.FIFO == strategyEnum) {
-            this.strategy = new FifoStrategyImpl();
-            this.courierSvc = new FifoCourierHandlerServiceImpl();
+            FifoStrategy fifoStrategy = new FifoStrategyImpl();
+            this.strategy = fifoStrategy;
+            this.courierSvc = new FifoCourierHandlerServiceImpl(fifoStrategy);
         } else {
-            this.strategy = new MatchedStrategyImpl();
-            this.courierSvc = new MatchedCourierHandlerServiceImpl();
+            MatchedStrategy matchedStrategy = new MatchedStrategyImpl();
+            this.strategy = matchedStrategy;
+            this.courierSvc = new MatchedCourierHandlerServiceImpl(matchedStrategy);
         }
     }
 
@@ -38,7 +42,7 @@ public class OrderDispatchServiceImpl implements OrderDispatchService {
     public void placeOrder(String kitchenId, Order order) {
         final Kitchen kitchen = getKitchen(kitchenId);
         kitchenThreadPool.submit(() -> kitchen.prepOrder(order, new KitchenCallbackImpl(this.strategy)));
-        courierHandlerThreadPool.submit(() -> this.courierSvc.handleCourier(order, kitchen.getKitchenDetails(), this.strategy));
+        courierHandlerThreadPool.submit(() -> this.courierSvc.handleCourier(order, kitchen.getKitchenDetails()));
     }
 
     private Kitchen getKitchen(String kitchenId) {

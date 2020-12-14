@@ -18,7 +18,7 @@ public class BasicKitchenImpl implements Kitchen {
 
     @Override
     public KitchenDetails getKitchenDetails() {
-        return null;
+        return this.kitchenDetails;
     }
 
     @Override

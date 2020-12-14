@@ -14,7 +14,7 @@ public interface Courier {
             throws InterruptedException {
 //        System.out.println("Courier : " + this.getId() + " Starting to kitchen : " + kitchen.getId());
         // can be made externally configurable
-        Thread.sleep(ThreadLocalRandom.current().nextInt(3, 15 + 1));
+        Thread.sleep(ThreadLocalRandom.current().nextInt(3, 7 + 1));
         // courier tells the mapper service that he has arrived at the kitchen
         courierCallback.courierArrivedCallback(kitchenDetails, this);
     }

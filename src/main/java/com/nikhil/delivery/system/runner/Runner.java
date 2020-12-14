@@ -13,11 +13,13 @@ public final class Runner {
 
     public void runFifoSimulation() {
         System.out.println("================== FIFO SIMULATOR ======================");
-        final ExecutorService kitchenThreadPool = Executors.newFixedThreadPool(50);
-        final ExecutorService courierHandlerThreadPool = Executors.newFixedThreadPool(50);
+        final ExecutorService kitchenThreadPool = Executors.newFixedThreadPool(3);
+        final ExecutorService courierHandlerThreadPool = Executors.newFixedThreadPool(2);
         final OrderDispatchService
                 dispatcherSvc = new OrderDispatchServiceImpl(StrategyEnum.FIFO, kitchenThreadPool, courierHandlerThreadPool);
 
+        new BasicCustomerImpl("cust3", "cust3", "address1", dispatcherSvc)
+                .placeOrder("kitchenId3", Order.builder().id("id3").name("name3").prepTimeMs(10000).build());
         new BasicCustomerImpl("cust1", "cust1", "address1", dispatcherSvc)
                 .placeOrder("kitchenId1", Order.builder().id("id1").name("name1").prepTimeMs(200).build());
         new BasicCustomerImpl("cust1", "cust1", "address1", dispatcherSvc)
@@ -47,7 +49,7 @@ public final class Runner {
 
     public static void main(String[] args) throws Exception {
         Runner runner = new Runner();
-//        runner.runFifoSimulation();
-        runner.runMatchedSimulation();
+        runner.runFifoSimulation();
+//        runner.runMatchedSimulation();
     }
 }

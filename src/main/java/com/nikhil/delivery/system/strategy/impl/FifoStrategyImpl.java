@@ -1,12 +1,12 @@
 package com.nikhil.delivery.system.strategy.impl;
 
 import com.nikhil.delivery.system.model.Order;
-import com.nikhil.delivery.system.strategy.Strategy;
+import com.nikhil.delivery.system.strategy.FifoStrategy;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class FifoStrategyImpl implements Strategy {
+public class FifoStrategyImpl implements FifoStrategy {
 
     private final BlockingQueue<Order> readyOrderQueue = new LinkedBlockingQueue<>();
 
